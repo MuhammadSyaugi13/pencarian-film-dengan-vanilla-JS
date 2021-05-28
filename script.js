@@ -50,6 +50,8 @@ searchBtn.addEventListener('click', function () {
 
             movies.forEach(m => cards += showCards(m));
 
+            console.log(cards);
+
             const movieContainer = document.querySelector('.movie-container');
             movieContainer.innerHTML = cards;
 
@@ -62,10 +64,10 @@ searchBtn.addEventListener('click', function () {
                     fetch('http://www.omdbapi.com/?apikey=366f9702&i=' + imdbID)
                         .then(response => response.json())
                         .then(m => {
+                            console.log(m);
 
                             // masukan data argumen kedalam func tampilan detail movie
                             const detailMovie = showMovieDetail(m);
-
                             // masukan tampilan detail ke modal
                             const modalBody = document.querySelector('.modal-body');
                             modalBody.innerHTML = detailMovie;
