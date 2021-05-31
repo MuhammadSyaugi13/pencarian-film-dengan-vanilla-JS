@@ -1,16 +1,32 @@
-// script mengakses API menggunakan fetch dan menerapkan async await
+// script mengakses API menggunakan fetch dan menerapkan async await serta error handling
+
 const searchBtn = document.querySelector('.search-button');
 searchBtn.addEventListener('click', async function () {
-    const inputKeyword = document.querySelector('.input-key');
-    const movies = await getMovies(inputKeyword.value);
-    console.log(movies);
-    updateUI(movies);
+    try {
+        const inputKeyword = document.querySelector('.input-key');
+        const movies = await getMovies(inputKeyword.value);
+        updateUI(movies);
+    } catch (err) {
+        alert(err);
+    }
 });
 
 function getMovies(keyword) {
     return fetch('http://www.omdbapi.com/?apikey=366f9702&s=' + keyword)
-        .then(response => response.json())
-        .then(response => response.Search);
+        .then(response => {
+            //jika response.ok mengembalikan nilai false (saat key api salah) atau link salah
+            if (!response.ok) {
+                throw new Error(response.statusText); //lempar error agar ditangkap catch
+            }
+            return response.json();
+        })
+        .then(response => {
+            // cek apakah data yg dimasukan kosong atau data tersebut tidak ada
+            if (response.Response === "False") {
+                throw new Error(response.Error);
+            }
+            return response.Search;
+        });
 };
 
 function updateUI(movie) {
